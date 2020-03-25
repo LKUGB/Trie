@@ -1,0 +1,31 @@
+3
+c o p
+a p e
+g l n
+4
+a f l p
+e q u i
+f g z t
+i u m j
+5
+a b c d e
+f g h i j
+k l m n o
+p q r s t
+u v w x y
+6
+a e i u x t
+h p o q y i
+q w e r t i
+j k l z o u
+p i e k t l
+m n o e g w
+7
+i k w c i t x
+q o w x n x y
+z q p i j x b
+u r i e p w m
+n o u i v c o
+y i w c b o a
+w i m s u c m
+0
