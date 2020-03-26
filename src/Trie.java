@@ -10,37 +10,40 @@ public class Trie {
 
     // Alphabet size (# of symbols) 
     static final int ALPHABET_SIZE = 26;
-    static TrieNode root;
+    static TrieNode root = new TrieNode(); //root node declaration
+
+    //Default constructor with no parameters
+    Trie() {
+    }
 
     // Inner class - TrieNode
-    static class TrieNode
-    {
+    static class TrieNode {
         TrieNode[] children = new TrieNode[ALPHABET_SIZE];
 
         // isEndOfWord is true if the node represents 
         // end of a word 
         boolean isEndOfWord;
 
-        TrieNode(){
+        TrieNode() {
             isEndOfWord = false;
             for (int i = 0; i < ALPHABET_SIZE; i++)
                 children[i] = null;
         }
-    };
+    }
+
+    ;
 
     // If not present, inserts key into trie 
     // If the key is prefix of trie node,  
     // just marks leaf node 
-    static void insert(String key)
-    {
+    public static void insert(String key) {
         int level;
         int length = key.length();
         int index;
 
         TrieNode pCrawl = root;
 
-        for (level = 0; level < length; level++)
-        {
+        for (level = 0; level < length; level++) {
             index = key.charAt(level) - 'a';
             if (pCrawl.children[index] == null)
                 pCrawl.children[index] = new TrieNode();
@@ -52,16 +55,14 @@ public class Trie {
         pCrawl.isEndOfWord = true;
     }
 
-    // Returns true if key presents in trie, else false 
-    static boolean search(String key)
-    {
+    //isWord method that check whether the inserted word is within the trie
+    public static boolean isWord(String key) {
         int level;
         int length = key.length();
         int index;
         TrieNode pCrawl = root;
 
-        for (level = 0; level < length; level++)
-        {
+        for (level = 0; level < length; level++) {
             index = key.charAt(level) - 'a';
 
             if (pCrawl.children[index] == null)
@@ -73,40 +74,32 @@ public class Trie {
         return (pCrawl != null && pCrawl.isEndOfWord);
     }
 
-    // Driver 
-    public static void main(String args[])
-    {
-        // Input keys (use only 'a' through 'z' and lower case) 
-        String keys[] = {"the", "a", "there", "answer", "any",
-                "by", "bye", "their"};
+    //isTrie method that
+    //returns 1 if argument is a complete word
+    //returns 0 if argument is not a complete word but could be the prefix of a longer word
+    //returns -1 if the argument is not a complete word nor a prefix
+    public static int isTrie(String key) {
+        int level;
+        int length = key.length();
+        int index;
 
-        String output[] = {"Not present in trie", "Present in trie"};
+        TrieNode pCrawl = root;
 
+        for (level = 0; level < length; level++) {
+            index = key.charAt(level) - 'a';
 
-        root = new TrieNode();
+            //case when the key is not within the trie
+            if (pCrawl.children[index] == null)
+                return -1;
 
-        // Construct trie 
-        int i;
-        for (i = 0; i < keys.length ; i++)
-            insert(keys[i]);
+            pCrawl = pCrawl.children[index];
+        }
 
-        // Search for different keys 
-        if(search("the") == true)
-            System.out.println("the --- " + output[1]);
-        else System.out.println("the --- " + output[0]);
-
-        if(search("these") == true)
-            System.out.println("these --- " + output[1]);
-        else System.out.println("these --- " + output[0]);
-
-        if(search("their") == true)
-            System.out.println("their --- " + output[1]);
-        else System.out.println("their --- " + output[0]);
-
-        if(search("thaw") == true)
-            System.out.println("thaw --- " + output[1]);
-        else System.out.println("thaw --- " + output[0]);
-
+        //case when the key is a prefix or a complete word
+        if (pCrawl != null && !pCrawl.isEndOfWord) {
+            return 0;
+        } else {
+            return 1;
+        }
     }
 }
-// This code is contributed by Sumit Ghosh 

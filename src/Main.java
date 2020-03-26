@@ -1,23 +1,21 @@
 import java.io.IOException;
 import java.io.FileReader;
 import java.io.BufferedReader;
-import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
 
 public class Main {
 
     // static instance data
-    static private ArrayList<String> lexicon = new ArrayList<>(); // the word list read from file
+    static private Trie lexicon = new Trie(); //declare new trie for strings to be inserted
     static private Set<String> foundWords = new TreeSet<>();      // words found in this puzzle
     static private Grid grid;     // represents a Boggle board
     static private int gridSize;  // set after Grid is read from file
     static private int maxWordLength = 0;  // used to cut down on depth of search
+    static int wordCount = 0; //used to count the word entered into the lexicon, thus could be displayed when driver is operating
 
     // Read the lexicon or word list from a file named twl06.txt
-    // -- creates an ArrayList of Strings in a class variable named lexicon
     static private void readWords(){
-        ArrayList<String> result = new ArrayList<>();
         try{
             // twl06 is an official Scrabble word list used in tournament play
             BufferedReader br = new BufferedReader(new FileReader("src/twl06.txt"));
@@ -26,7 +24,8 @@ public class Main {
                 while ((line = br.readLine()) != null) {
                     if(line.length() > maxWordLength)
                         maxWordLength = line.length();
-                    lexicon.add(line);
+                    lexicon.insert(line); //insert the words in the file into the lexicon
+                    wordCount++; //increment the word count whenever a word is inserted into the lexicon from the file
                 }
             } finally {
                 br.close();
@@ -34,30 +33,6 @@ public class Main {
         } catch (IOException e){
             System.out.println("Exception while processing word list file.");
         }
-    }
-
-    // Check str to see if it is either a word in the lexicon or the prefix
-    // of a word.  If it's neither, then there's no need to continue down
-    // this path.
-    // Returns:
-    //   -1 if str is not a word or a prefix of any word in the word list
-    //    0 if str is a prefix of a word but not a complete word
-    //    1 if str is a complete word in the word list
-    private static int prefix( String str, ArrayList<String> lex){
-        int strLength = str.length();
-        // potentially look through entire lexicon
-        for(int i=0; i<lex.size(); i++){
-            String nextWord = lex.get(i);
-            // 3 possibilities to check
-            if(str.equals(nextWord))   // complete match
-                return 1;
-            else if(nextWord.length() > strLength &&   // prefix match
-                      str.equals(lex.get(i).substring(0,strLength)))
-                return 0;
-            else if(str.compareTo(nextWord) < 0)  // shortcut exit
-                return -1;
-        }
-        return -1;
     }
 
     // A recursive function to find all words present in a Boggle grid
@@ -78,11 +53,11 @@ public class Main {
         visited[i][j] = true;
         str = str + grid.getLetter(i,j);
 
-        // look up 'str' in lexicon, prefix() returns:
+        // look up 'str' in lexicon, isTrie returns:
         //    -1 if str is not a prefix of any word in the word list
         //     0 if str is a prefix of a word but not a complete word
         //     1 if str is a complete word in the word list
-        int strCheck = prefix(str, lexicon);
+        int strCheck = lexicon.isTrie(str);
 
         // str passes first test, it's either a word or a prefix
         if(strCheck >= 0){
@@ -139,35 +114,11 @@ public class Main {
         return total;
     }
 
-    // simple method for testing word lookup
-    // returns false if something doesn't work right
-    private static boolean lookupTest(){
-        // check that all legal words were stored
-        if(!lexicon.contains("cat"))
-            return false;
-        if(!lexicon.contains("cats"))
-            return false;
-        if(!lexicon.contains("catatonic"))
-            return false;
-        if(!lexicon.contains("rat"))
-            return false;
-        if(!lexicon.contains("rather"))
-            return false;
-        // try words not in the list
-        if(lexicon.contains("picard") || lexicon.contains("xyzzy"))
-            return false;
-        // if we get here then all tests passed\
-        return true;
-    }
-
     public static void main(String[] args) {
 
         // read word list / lexicon
         readWords();
-        System.out.println( lexicon.size() + " words in word list.");
-
-        // run simple unit test on code for looking up words
-        assert(lookupTest()):"test of word lookup failed";
+        System.out.println(wordCount + " words in word list.");
 
         // read the grid file one puzzle at a time
         try {
