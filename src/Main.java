@@ -1,3 +1,12 @@
+/**
+ * Project 3 - CSC 221 Spring 2020
+ * Honor Pledge: The code submitted for this project was developed by
+ * Shiming Jin without outside assistance or consultation
+ * except as allowed by the instructions for this project.
+ **/
+
+
+
 import java.io.IOException;
 import java.io.FileReader;
 import java.io.BufferedReader;
