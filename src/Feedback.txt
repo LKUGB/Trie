@@ -1,0 +1,5 @@
+Score Obtained: 95
+-5% Empty default constructor 
+Trie() {
+    root = new TrieNode();
+}
